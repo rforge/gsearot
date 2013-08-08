@@ -1,0 +1,9 @@
+Package: GSEArot
+Type: Package
+Title: Blahblah
+Version: 0.9
+Date: 2012-10-23
+Author: Guro Dorum
+Maintainer: Guro Dorum <guro.dorum@umb.no>
+Description: Blah blah blam, bla bla lba
+License: GLP version 2 or newer
