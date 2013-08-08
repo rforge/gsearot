@@ -1,0 +1,192 @@
+\name{gsea.rotation2}
+\alias{gsea.rotation2}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{
+GSEA rotation for longitudinal data.
+}
+\description{
+GSEA rotation for longitudinal data. Assumes common covariance matrix for all genes in the same gene set.
+}
+\usage{
+gsea.rotation2(S, Y, Xlist, Zlist, contrast, covmatList = NULL, nrot = 10000, ES.p = 1)
+}
+ #Input:
+  #    - Matrix indicating gene set membership with genes as rows and gene sets as columns. 1 indicates that the gene is a member, 0 indicates not a member.
+  #      Each column represent a gene set, each row represent a gene
+  #    - Y: gene expression data. A list of vectors, one for each gene set
+  #    - Xlist: design data. A list of vectors, one for each gene set.
+  #    - contrast: matrix of contrasts. Each column represent one contrast
+  #    - covmatList: covariance between samples (optional). A list of vectors, one for each gene set
+  #    - nrot: number of permutations (default: 10000)
+  #    - Es.p=1: weighting parameter for enrichment score (default=1)
+  #    
+  #Output:
+  #    - $Ngenes: size of gene sets
+  #    - $ES: enrichment score
+  #    - $NES: normalised enrichment score
+  #    - $p.value: p.value per gene set
+  #    - $q.value: q-value per gene set 
+\arguments{
+  \item{S}{
+Matrix indicating gene set membership with genes as rows and gene sets 
+as columns. 1 indicates that the gene is a member, 0 indicates not a member.
+}
+  \item{Y}{
+  Gene expression data. A list of vectors, one for each gene set.
+}
+  \item{Xlist}{
+  Design matrix for fixed factors, each column represent a factor. A list of matrices, one for each gene set.
+}
+  \item{Zlist}{
+  Design matrix for random factors, each column represent a factor. A list of matrices, one for each gene set.
+}
+  \item{contrast}{
+  Matrix of contrasts to be tested. Each column represent one contrast.
+}
+  \item{covmatList}{
+  Covariance matrix. A list of matrices, one for each gene set.
+}
+  \item{nrot}{
+Number of rotaions to be performed (default=10000)
+}
+  \item{ES.p}{
+Weighting parameter for the enrichment score (default=1)
+}
+}
+\details{
+%%  ~~ If necessary, more details than the description above ~~
+}
+\value{
+\item{Ngenes}{Size of gene sets.}
+\item{ES}{Enrichment scores.}
+\item{NES}{Normalised enrichment scores.}
+\item{p.value}{p-value per gene set.}
+\item{q.value}{q-value per gene set.}
+}
+\references{
+%% ~put references to the literature/web site here ~
+}
+\author{
+Guro Dorum <guro.dorum@umb.no>
+}
+\note{
+%%  ~~further notes~~
+}
+
+%% ~Make other sections like Warning with \section{Warning }{....} ~
+
+\seealso{
+\code{\link{gsea.rotation}} for GSEA rotation for longitudinal data assuming common variance matrix for all genes.
+}
+\examples{
+require(igraph)
+
+#2 gene sets of 3 genes each. 3 time points. 1 replicate at each time point. Total number of observations in gene set is n
+#Note that this example is to small to get good covariance estimates (the model is too complex). Increase the number of samples to #improve the estimates
+ngs <- 2
+ng <- 3
+nt <- 3
+nrep <- 1
+n <- ng*nt*nrep
+
+iset <- rep(1:ngs, each=ng) #Indicating which gene set each gene belongs to
+S <- matrix(0,ng*ngs,ngs)
+for(i in 1:ngs) {
+  S[iset==i,i] <- 1
+}
+
+#Find correlations between genes in a gene set by construting a graph for each gene set and finding the
+#diffusion matrix. For simplicity, all gene sets are assumed to have the same gene dependencies here.
+G.data <- cbind(1:(ng-1),2:ng)
+G.graph <- graph.data.frame( G.data, directed=FALSE )
+G.graph <- addSignMatrix( G.graph )
+Dmat <- findDiffusion( G.graph )
+Dmat <- 1/Dmat # Gene dependencies. 'Distance' is reciprocal to diffusion
+
+#Design for each gene set
+Gene <- rep(1:ng,each=nt*nrep)
+Timer <- rep(1:nt,times=ng*nrep) 
+Time <- ordered(Timer)
+#Design matrix for random factors
+Z <- cbind(Timer,Gene)
+colnames(Z) <- c("Time","Gene")
+#Design matrix for fixed factors
+X <- model.matrix(~Time)[,1:2]
+colnames(X) <- c("Gene","Linear")
+
+set <- rep(1:ngs,each=n) #Indicating which gene set each sample belong to
+
+#Set values for variance components
+sigmat <- 2 #Time variance
+sigmag <- 2 #Gene variance
+sigmae <- 3 #Random error variance
+phi <- 0.9 #Time correlation parameter
+ga <- 0.3 #Gene correlation parameter
+
+#Time and gene correlations
+Ts <- matrix(0,n,n)
+Gs <- matrix(0,n,n)
+for(i in 1:(n-1)) {
+  for(j in (i+1):n) {
+    if(Z[i,2]==Z[j,2]){ 
+      Ts[i,j] <- abs(Z[j,1] - Z[i,1]) 
+      Gs[i,j] <- Dmat[Z[j,2],Z[i,2]] 
+    } else Ts[i,j] <- Inf
+  }
+}
+Ts <- Ts + t(Ts)
+Rt <- exp(-phi*Ts)
+Gs <- Gs + t(Gs)
+Rg <- exp(-ga*Gs)
+
+#Make covariance matrix
+V <- makecov2(theta=c(sigmat,sigmag,sigmae),Rt=Rt,Rg=Rg,design=Z)
+Vroot <- chol(V)
+
+xz <- vector("list",ngs)
+Xlist <- lapply(xz,function( x ){X})
+Zlist <- lapply(xz,function( x ){Z})
+
+#Simulate data with covariance structure
+Y <- numeric()
+for(k in 1:ngs) {
+  Y1 <- matrix(rnorm(n),1,n)
+  Y <- c(Y,crossprod(t(Y1),Vroot))
+}
+# Add fixed gene effects and linear time effecs first gene set
+betaG <-  2; betaLT <- 1
+Yeff <- matrix(Y,ncol=ngs)
+#Gene effects + linear time effect in first gene set
+Yeff[,1] <- Yeff[,1] + X[,1]*betaG + X[,2]*betaLT
+
+#Estimate covariance matrix
+#Constraints for optimisation and start values
+A <- rbind(c(1,0,0,0), c(0,1,0,0), c(0,0,1,0), c(0,0,0,1))
+b <- c(1e-6, 1e-6, 1e-6, 1e-6)
+alphaStart <- c(sigmag/sigmat,sigmae/sigmat,phi,ga)
+reml_res <- reml2(alphaStart=alphaStart, X=X, Y=Y, Z=Z, Ts=Ts, Gs=Gs, set=set, A=A, b=b)
+sigmat.hat <- reml_res$sigma; sigmag.hat <- reml_res$alpha[1]*sigmat.hat; sigmae.hat <- reml_res$alpha[2]*sigmat.hat
+phi.hat <- reml_res$alpha[3]; ga.hat <- reml_res$alpha[4]
+#Estimated covariance matrix
+V.hat <- sigmat.hat*exp(-phi.hat*Ts) + sigmag.hat*exp(-ga.hat*Gs) + sigmae.hat*diag(n)  
+
+if( all(eigen(V.hat)$values>=0) ) { 
+  a <- vector("list",ngs)
+  covmatList <- lapply(a,function( x ){V.hat})
+} else stop("Cocariance matrix is not positive definite! Simulate new data")
+
+#Contrasts for testing gene effect and linear time effect
+contrast <- matrix(0,ncol(X),2)
+colnames(contrast) <- c("Gene","Linear")
+contrast[colnames(X)=="Gene",1] <- 1
+contrast[colnames(X)=="Linear",2] <- 1
+
+#GSEA rotation
+gsea.rotation2(S=S, Y=c(Yeff), Xlist=Xlist, Zlist=Zlist, contrast=contrast, covmatList=covmatList, nrot=1000, ES.p=1)
+
+  }
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{ ~kwd1 }
+\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
