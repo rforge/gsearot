@@ -43,10 +43,10 @@ Empirical Bayes analysis of a microarray experiment,
 Pan,W., Lin,J. and Le,C.T. (2003)
 A mixture model approach to detecting differentially expressed genes with microarray data, 
 \emph{Funct Integr Genomics}, 
-\bold{3}, 117–124.
+\bold{3}, 117?124.
 }
 \author{
-Guro D{\o}rum
+Guro Dorum
 }
 \note{
 %%  ~~further notes~~

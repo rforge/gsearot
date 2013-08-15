@@ -10,22 +10,6 @@ GSEA rotation for longitudinal data. Assumes common covariance matrix for all ge
 \usage{
 gsea.rotation2(S, Y, Xlist, Zlist, contrast, covmatList = NULL, nrot = 10000, ES.p = 1)
 }
- #Input:
-  #    - Matrix indicating gene set membership with genes as rows and gene sets as columns. 1 indicates that the gene is a member, 0 indicates not a member.
-  #      Each column represent a gene set, each row represent a gene
-  #    - Y: gene expression data. A list of vectors, one for each gene set
-  #    - Xlist: design data. A list of vectors, one for each gene set.
-  #    - contrast: matrix of contrasts. Each column represent one contrast
-  #    - covmatList: covariance between samples (optional). A list of vectors, one for each gene set
-  #    - nrot: number of permutations (default: 10000)
-  #    - Es.p=1: weighting parameter for enrichment score (default=1)
-  #    
-  #Output:
-  #    - $Ngenes: size of gene sets
-  #    - $ES: enrichment score
-  #    - $NES: normalised enrichment score
-  #    - $p.value: p.value per gene set
-  #    - $q.value: q-value per gene set 
 \arguments{
   \item{S}{
 Matrix indicating gene set membership with genes as rows and gene sets 
@@ -184,7 +168,6 @@ contrast[colnames(X)=="Linear",2] <- 1
 #GSEA rotation
 gsea.rotation2(S=S, Y=c(Yeff), Xlist=Xlist, Zlist=Zlist, contrast=contrast, covmatList=covmatList, nrot=1000, ES.p=1)
 
-  }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

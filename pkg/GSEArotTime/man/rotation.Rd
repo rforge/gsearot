@@ -34,7 +34,7 @@ or 2 (non-zero means allowed)
 %% ~put references to the literature/web site here ~
 }
 \author{
-Guro D{\o}rum
+Guro Dorum
 }
 \note{
 %%  ~~further notes~~

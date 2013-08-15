@@ -1,9 +1,11 @@
 Package: GSEArotTime
 Type: Package
-Title: What the package does (short line)
-Version: 1.0
-Date: 2013-04-26
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Title: GSEA rotation for time series data
+Version: 0.9
+Date: 2013-08-12
+Author: Guro Dorum
+Maintainer: Guro Dorum <guro.dorum@umb.no>
+Description: Functions for performing Gene Set Enrichment Analysis (GSEA) with rotation testing for time series data
+Depends: R (>= 3.0), limma
+License: GPL
+LazyLoad: yes

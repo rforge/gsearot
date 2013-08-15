@@ -41,7 +41,7 @@ In addition, a histogram over the normalised null distribution can be plotted.
 %% ~put references to the literature/web site here ~
 }
 \author{
-Guro D{\o}rum
+Guro Dorum
 }
 \note{
 %%  ~~further notes~~
