@@ -6,6 +6,6 @@ Date: 2013-08-12
 Author: Guro Dorum
 Maintainer: Guro Dorum <guro.dorum@umb.no>
 Description: Functions for performing Gene Set Enrichment Analysis (GSEA) with rotation testing for time series data
-Depends: R (>= 3.0), limma
+Depends: R (>= 3.0), limma, igraph
 License: GPL
 LazyLoad: yes
