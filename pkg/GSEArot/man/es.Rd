@@ -44,7 +44,7 @@ approach for interpreting genome-wide expression pro?les, \emph{PNAS}, \bold{102
 15545-15550.
 }
 \author{
-Guro D\u00F8 rum
+Guro Dorum
 }
 \note{
 %%  ~~further notes~~

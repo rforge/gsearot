@@ -30,7 +30,7 @@ QR(X)
 %% ~put references to the literature/web site here ~
 }
 \author{
-Guro D{\o}rum
+Guro Dorum
 }
 \note{
 %%  ~~further notes~~

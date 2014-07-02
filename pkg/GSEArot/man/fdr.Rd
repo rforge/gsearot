@@ -40,11 +40,11 @@ Each column represent a gene set, and each row represent a permutation.
 Subramanian, A., Tamayo, P., Mootha, V. K., Mukherjee, S., Ebert, B. L.,
 Gillette, M. A., Paulovich, A., Pomeroy, S. L., Golub, T. R., Lander, E. S.
 and Mesirov, J. P (2005) Gene set enrichment analysis: A knowledge-based
-approach for interpreting genome-wide expression pro¯les, \emph{PNAS}, \bold{102},
+approach for interpreting genome-wide expression pro?les, \emph{PNAS}, \bold{102},
 15545-15550.
 }
 \author{
-Guro D{\o}rum
+Guro Dorum
 }
 \note{
 %%  ~~further notes~~
