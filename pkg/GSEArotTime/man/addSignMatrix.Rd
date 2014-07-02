@@ -23,7 +23,7 @@ A \code{\link{graph}} object.
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-\item{graph} \code{\link{graph}} object with added sign matrix.
+\item{graph}\code{\link{graph}} object with added sign matrix.
 }
 \references{
 %% ~put references to the literature/web site here ~
