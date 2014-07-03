@@ -20,7 +20,14 @@ function(S, y, X, contrast, covmat=NULL, nrot=10000, ES.p=1) {
   #    - $p.value: p.value per gene set
   #    - $q.value: q-value per gene set 
   
-  require(limma)
+  #install the limma package from Bioconductor if necessary
+  suppressMessages(suppressWarnings(a <- require(limma)))
+  if(!a){
+    source("http://bioconductor.org/biocLite.R")
+    biocLite("limma",ask=FALSE)
+    library(limma)
+  }
+
   k <- ncol(contrast) #Number of interesting contrasts
   idx <- which( contrast==1, arr.ind=TRUE)[,1] #Get the index of interesting contrasts
   n <- nrow(X)

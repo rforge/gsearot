@@ -4,8 +4,8 @@ Title: GSEA rotation for time series data
 Version: 0.9
 Date: 2013-08-12
 Author: Guro Dorum
-Maintainer: Guro Dorum <guro.dorum@umb.no>
+Maintainer: Guro Dorum <guro.dorum@nmbu.no>
 Description: Functions for performing Gene Set Enrichment Analysis (GSEA) with rotation testing for time series data
-Depends: R (>= 3.0), limma, igraph
+Depends: R (>= 3.0), igraph
 License: GPL
 LazyLoad: yes
