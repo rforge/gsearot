@@ -5,7 +5,7 @@
 Make covariance matrix.
 }
 \description{
-Make covariance matrix.
+Makes a covariance matrix for a model with time series effect and other random effetcs. For balanced and unbalanced designs.
 }
 \usage{
 makecov(theta, correlation, design, subject)
@@ -13,33 +13,29 @@ makecov(theta, correlation, design, subject)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{theta}{
-%%     ~~Describe \code{theta} here~~
+A vector of variances for all random factors, where first element must be time series variance and second element must be the random error variance. The remaining elements can be variances for any other random design factors
 }
   \item{correlation}{
-%%     ~~Describe \code{correlation} here~~
+A matrix of time correlations between samples (usually zero for samples from different subjects)
 }
   \item{design}{
-%%     ~~Describe \code{design} here~~
+A nxp design matrix for the p random design factors. Must contain time effect in the first column. The time column must be numeric and the time intervals must be of actual size
 }
   \item{subject}{
-%%     ~~Describe \code{subject} here~~
+ A numeric vector indicating which subject each sample belongs to
 }
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+Covariance matrix.
 }
 \references{
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Guro Dorum
 }
 \note{
 %%  ~~further notes~~
@@ -48,7 +44,7 @@ makecov(theta, correlation, design, subject)
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{makecov2}} for covariance matrix also including gene dependencies.
 }
 \examples{
 ##---- Should be DIRECTLY executable !! ----

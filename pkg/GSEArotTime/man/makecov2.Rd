@@ -4,7 +4,7 @@
 Make covariance matrix.
 }
 \description{
-Make covariance matrix.
+Make covariance matrix for model with time series correlation, gene correlation and correlations due to other random effetcs. For balanced and unbalanced designs.
 }
 \usage{
 makecov2(theta, Rt, Rg, design)
@@ -12,33 +12,29 @@ makecov2(theta, Rt, Rg, design)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{theta}{
-%%     ~~Describe \code{theta} here~~
+A vector of variances for all random factors, where first element must be time series variance, second element must be gene variance, and third element must be the random error variance. The remaining elements can be variances for any other random design factors
 }
   \item{Rt}{
-%%     ~~Describe \code{Rt} here~~
+A matrix of time correlations between samples (usually zero for samples from different subjects)
 }
   \item{Rg}{
-%%     ~~Describe \code{Rg} here~~
+A matrix of correlations between genes
 }
   \item{design}{
-%%     ~~Describe \code{design} here~~
+A nxp design matrix for the p random design factors. Must contain time in the first column and gene in the second. The time column must be numeric and the time intervals must be of actual size.
 }
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+Covariance matrix
 }
 \references{
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Guro Dorum
 }
 \note{
 %%  ~~further notes~~
@@ -47,7 +43,7 @@ makecov2(theta, Rt, Rg, design)
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{makecov}} for covariance matrix without gene dependencies.
 }
 \examples{
 ##---- Should be DIRECTLY executable !! ----

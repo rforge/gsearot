@@ -159,3 +159,97 @@ function( graph, V ){
   diag( R ) <- 1
   return( R )
 }
+
+.loglik_genedep <- function(theta, Xlist, Zlist, Ylist, TsList, GsList, BsList) {
+  #log-likelihood function to be optimised with reml().
+  #
+  #Input:
+  #    - theta: a vector of parameters to be optimised over. The first parameter must be gene variance, 
+  #      the second parameter random error variance, the third must be a parameter controlling correlation between time points and the fourth must
+  #      be a parameter controlling correlation between genes. The remaining parameters can be variances for other random design factors. 
+  #    - X: design matrix with fixed design variables for a gene set (assuming same design for all gene sets).
+  #    - Z: design matrix for random design factors for a gene set (assuming same design for all gene sets).
+  #    - Y: vector of observed values for all gene sets.
+  #    - Ts: structure of time dependencies between samples in a gene set (assuming same design for all gene sets).
+  #    - Gs: structure of gene dependencies between samples in a gene set (assuming same design for all gene sets).
+  #    - Bs: structure of batch dependencies between samples in a gene set (assuming same design for all gene sets).
+  #    - set: vector of indices indicating gene set for each sample.
+  #Output:
+  #    - minLoglik: minimum negative log-likelihood ( = maximum likelihood).
+  
+  p <- ncol(Xlist[[1]])
+  nset <- length(Xlist)
+  
+  phi <- theta[3]
+  ga <- theta[4]    
+  #Time variance, gene variance, random error variance, and variances for other random factors.
+  alpha <- c(1,theta[-c(3,4)])
+  
+  # #This is identical for all gene sets (assuming identical design)
+  #    #Time and gene correlations
+  #    Rt <- exp(-phi*Ts)
+  #    Rg <- exp(-ga*Gs)
+  #    
+  #    #Make covariance matrix
+  #    if( ncol(Z) > 2 ) {
+  #        #only works when we have a batch effect. Else use makecov()
+  #        V.hat <- alpha[4]*Bs + alpha[1]*Rt + alpha[2]*Rg + diag(n)*alpha[3]
+  #    }else V.hat <- makecov_genedep(alpha,Rt=Rt,Rg=Rg,design=Z)  
+  #     
+  #    Vinv <- solve(V.hat)
+  #    XVinv <- t(X)%*%Vinv
+  #    XVinvX <- XVinv%*%X
+  #    XV <- solve(XVinvX)%*%XVinv
+  #    
+  #This is different for each gene set (includes Y)
+  RSS <- numeric(nset) 
+  logDetV <- numeric(nset)
+  logDetXVinvX <- numeric(nset)
+  N <- 0
+  for(k in 1:nset) {
+    
+    Y <- Ylist[[k]]
+    X <- Xlist[[k]]
+    Z <- Zlist[[k]]
+    Bs <- BsList[[k]]
+    Gs <- GsList[[k]]
+    Ts <- TsList[[k]]
+    
+    n <- length(Y)
+    dim(Y) <- c(n,1)
+    N <- N + n #Counting the total number of samples
+    
+    #Time and gene correlations
+    Rt <- exp(-phi*Ts)
+    Rg <- exp(-ga*Gs)
+    
+    #Make covariance matrix
+    if( ncol(Z) > 2 ) {
+      #only works when we have a batch effect. Else use makecov()
+      V.hat <- alpha[4]*Bs + alpha[1]*Rt + alpha[2]*Rg + diag(n)*alpha[3]
+    }else V.hat <- alpha[1]*Rt + alpha[2]*Rg + diag(n)*alpha[3]#V.hat <- makecov_genedep(alpha,Rt=Rt,Rg=Rg,design=Z)  
+    
+    Vinv <- solve(V.hat)
+    XVinv <- t(X)%*%Vinv
+    XVinvX <- XVinv%*%X
+    XV <- solve(XVinvX)%*%XVinv
+    
+    beta.hat <- XV%*%Y
+    r <- Y - X%*%beta.hat
+    
+    RSS[k] <- t(r)%*%Vinv%*%r        
+    logDetV[k] <- log( det(V.hat) )
+    logDetXVinvX[k] <- log( det( XVinvX ) )
+  }
+  
+  #print(sum(RSS))
+  #    print(det(V.hat))
+  #Add extra minus before the log-likelihood because R optimisation functions find minimum on default. 
+  #Minimising negative likelihood is equivalent to maximising positive likelihood.
+  sigmat.hat <- sum(RSS)/(N-nset*p) 
+  #minLoglik <- - ( - 0.5*( nset*(n-p)*log(sigmat.hat) + nset*log( det(V.hat) )   + sum(RSS)/sigmat.hat + nset*log( det( XVinvX ) )  ) )
+  minLoglik <- - ( - 0.5*( (N-nset*p)*log(sigmat.hat) + sum(logDetV)  + sum(RSS)/sigmat.hat + sum(logDetXVinvX) ) )
+  
+  minLoglik     
+  
+}

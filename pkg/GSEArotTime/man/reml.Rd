@@ -1,10 +1,10 @@
 \name{reml}
 \alias{reml}
 \title{
-Restricted maximum likelihood.
+Restricted maximum likelihood to estimate the covariance matrix of longitudinal expression data with correlation between samples.
 }
 \description{
-Restricted maximum likelihood.
+Restricted maximum likelihood for longitudinal expression data where genes are assumed independent. All genes are assumed to have identical covariance matrix.
 }
 \usage{
 reml(alphaStart, X, Y, Z, subject, A, b)
@@ -12,42 +12,38 @@ reml(alphaStart, X, Y, Z, subject, A, b)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{alphaStart}{
-%%     ~~Describe \code{alphaStart} here~~
+A numeric vector of start values for the parameters to be estimated. The first parameter must be random error variance, the last must be a parameter controlling correlation between time points. The remaining parameters can be variances for other random design factors 
 }
-  \item{X}{
-%%     ~~Describe \code{X} here~~
+\item{X}{
+Design matrix with fixed design variables
 }
   \item{Y}{
-%%     ~~Describe \code{Y} here~~
+Matrix of observed values. Rows are samples and columns are variables.
 }
   \item{Z}{
-%%     ~~Describe \code{Z} here~~
-}
-  \item{subject}{
-%%     ~~Describe \code{subject} here~~
+Design matrix for random design factors
 }
   \item{A}{
-%%     ~~Describe \code{A} here~~
+Restrictions for parameters. See \code{link\constrOptim}}
 }
   \item{b}{
-%%     ~~Describe \code{b} here~~
+Restrictions for parameters. See \code{link\constrOptim}}
 }
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+\item{alpha.hat}{Vector of estimates for the parameters in alphaStart}
+\item{beta.hat}{Vector of estimated parameters for fixed design factors}
+\item{sigma}{Estimated common variance}
+\item{maklix}{The maximum likelihood value}
 }
 \references{
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Guro Dorum
 }
 \note{
 %%  ~~further notes~~
@@ -56,7 +52,7 @@ reml(alphaStart, X, Y, Z, subject, A, b)
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{reml2}} and \code{\link{reml_genedep}} for restricted maximum likelihood where gene correlations are assumed within gene set.
 }
 \examples{
 ##---- Should be DIRECTLY executable !! ----

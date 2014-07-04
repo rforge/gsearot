@@ -30,7 +30,7 @@ QR(X)
 %% ~put references to the literature/web site here ~
 }
 \author{
-Guro Dorum
+Solve Sabo
 }
 \note{
 %%  ~~further notes~~

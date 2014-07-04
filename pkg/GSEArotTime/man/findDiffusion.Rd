@@ -12,10 +12,10 @@ findDiffusion(graph, alpha = 1)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{graph}{
-%%     ~~Describe \code{graph} here~~
+Graph object
 }
   \item{alpha}{
-%%     ~~Describe \code{alpha} here~~
+Parameter that controls speed of diffusion over a network
 }
 }
 \details{
@@ -32,7 +32,7 @@ findDiffusion(graph, alpha = 1)
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Solve Sabo
 }
 \note{
 %%  ~~further notes~~
